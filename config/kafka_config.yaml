@@ -1,0 +1,306 @@
+# ================================================================
+# KAFKA CONFIGURATION FOR MULTI-LANGUAGE SENTIMENT ENGINE
+# ================================================================
+# This configuration file defines all Kafka-related settings for the
+# sentiment analysis microservices architecture.
+
+# Basic Kafka Connection Settings
+kafka:
+  # Kafka broker connection settings
+  bootstrap_servers:
+    - "localhost:9092"  # Default for local development
+    - "kafka-broker-1:9092"  # Production cluster node 1
+    - "kafka-broker-2:9092"  # Production cluster node 2
+    - "kafka-broker-3:9092"  # Production cluster node 3
+  
+  # Security settings for production environments
+  security:
+    protocol: "SASL_SSL"  # Options: PLAINTEXT, SSL, SASL_PLAINTEXT, SASL_SSL
+    sasl_mechanism: "SCRAM-SHA-512"  # Options: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512
+    sasl_username: "${KAFKA_SASL_USERNAME}"  # Environment variable
+    sasl_password: "${KAFKA_SASL_PASSWORD}"  # Environment variable
+    ssl_ca_location: "/etc/ssl/certs/ca-cert.pem"
+    ssl_cert_location: "/etc/ssl/certs/client-cert.pem"
+    ssl_key_location: "/etc/ssl/private/client-key.pem"
+    ssl_key_password: "${SSL_KEY_PASSWORD}"
+  
+  # Client configuration
+  client:
+    id: "sentiment-engine-client"
+    request_timeout_ms: 30000
+    retry_backoff_ms: 100
+    max_retries: 3
+    acks: "all"  # Options: 0, 1, all
+    enable_idempotence: true
+    max_in_flight_requests_per_connection: 5
+
+# Topic Configuration
+topics:
+  # Input topics for raw text data
+  input:
+    raw_text:
+      # Language-specific topics
+      english: "raw_text_en"
+      portuguese: "raw_text_pt"
+      spanish: "raw_text_es"
+      french: "raw_text_fr"
+      german: "raw_text_de"
+      italian: "raw_text_it"
+      chinese: "raw_text_zh"
+      japanese: "raw_text_ja"
+      korean: "raw_text_ko"
+      arabic: "raw_text_ar"
+      hindi: "raw_text_hi"
+      multilingual: "raw_text_multi"  # Auto-detected language
+    
+    # Social media specific topics
+    social_media:
+      twitter: "social_twitter_stream"
+      facebook: "social_facebook_stream"
+      instagram: "social_instagram_stream"
+      linkedin: "social_linkedin_stream"
+      reddit: "social_reddit_stream"
+    
+    # News and articles
+    news:
+      breaking_news: "news_breaking_stream"
+      financial_news: "news_financial_stream"
+      sports_news: "news_sports_stream"
+      tech_news: "news_tech_stream"
+    
+    # Customer feedback
+    customer_feedback:
+      reviews: "customer_reviews_stream"
+      surveys: "customer_surveys_stream"
+      support_tickets: "support_tickets_stream"
+  
+  # Processing topics
+  processing:
+    preprocessed_text: "preprocessed_text"
+    language_detected: "language_detected"
+    text_normalized: "text_normalized"
+    tokens_extracted: "tokens_extracted"
+  
+  # Output topics for analysis results
+  output:
+    sentiment_results: "sentiment_results"
+    emotion_analysis: "emotion_analysis"
+    aspect_based_sentiment: "aspect_sentiment"
+    confidence_scores: "confidence_scores"
+    model_predictions: "model_predictions"
+  
+  # Aggregated insights
+  insights:
+    hourly_aggregates: "insights_hourly"
+    daily_aggregates: "insights_daily"
+    trending_topics: "trending_topics"
+    brand_sentiment: "brand_sentiment_summary"
+    market_sentiment: "market_sentiment_summary"
+  
+  # Monitoring and system topics
+  monitoring:
+    performance_metrics: "monitoring_performance"
+    error_logs: "monitoring_errors"
+    health_checks: "monitoring_health"
+    model_drift: "monitoring_model_drift"
+
+# Topic Properties Configuration
+topic_properties:
+  # Default properties for all topics
+  default:
+    num_partitions: 6
+    replication_factor: 3
+    cleanup_policy: "delete"  # Options: delete, compact
+    retention_ms: 604800000  # 7 days in milliseconds
+    segment_ms: 86400000     # 1 day in milliseconds
+    max_message_bytes: 1048576  # 1MB
+    compression_type: "lz4"  # Options: none, gzip, snappy, lz4, zstd
+  
+  # High-throughput topics (social media streams)
+  high_throughput:
+    num_partitions: 12
+    replication_factor: 3
+    retention_ms: 259200000  # 3 days
+    segment_ms: 3600000      # 1 hour
+    batch_size: 65536
+    linger_ms: 5
+  
+  # Long-term storage topics (aggregated insights)
+  long_term:
+    num_partitions: 3
+    replication_factor: 3
+    cleanup_policy: "compact"
+    retention_ms: 2592000000  # 30 days
+    segment_ms: 604800000     # 7 days
+    min_compaction_lag_ms: 86400000  # 1 day
+
+# Consumer Configuration
+consumers:
+  # Preprocessing service consumer
+  preprocessing_service:
+    group_id: "preprocessing-service-group"
+    auto_offset_reset: "earliest"  # Options: earliest, latest, none
+    enable_auto_commit: false
+    max_poll_records: 100
+    max_poll_interval_ms: 300000  # 5 minutes
+    session_timeout_ms: 10000
+    heartbeat_interval_ms: 3000
+    fetch_min_bytes: 1024
+    fetch_max_wait_ms: 500
+    max_partition_fetch_bytes: 1048576  # 1MB
+  
+  # Sentiment analysis service consumer
+  sentiment_analysis_service:
+    group_id: "sentiment-analysis-group"
+    auto_offset_reset: "earliest"
+    enable_auto_commit: false
+    max_poll_records: 50  # Smaller batches for ML processing
+    max_poll_interval_ms: 600000  # 10 minutes (longer for ML inference)
+    session_timeout_ms: 30000
+    heartbeat_interval_ms: 10000
+    isolation_level: "read_committed"
+  
+  # Aggregation service consumer
+  aggregation_service:
+    group_id: "aggregation-service-group"
+    auto_offset_reset: "earliest"
+    enable_auto_commit: false
+    max_poll_records: 200
+    max_poll_interval_ms: 180000  # 3 minutes
+    session_timeout_ms: 15000
+    heartbeat_interval_ms: 5000
+  
+  # Real-time dashboard consumer
+  dashboard_service:
+    group_id: "dashboard-realtime-group"
+    auto_offset_reset: "latest"  # Only process new messages
+    enable_auto_commit: true
+    auto_commit_interval_ms: 1000
+    max_poll_records: 500
+    max_poll_interval_ms: 60000
+
+# Producer Configuration
+producers:
+  # Data ingestion producer
+  data_ingestion:
+    acks: "all"
+    retries: 3
+    batch_size: 32768  # 32KB
+    linger_ms: 10
+    buffer_memory: 67108864  # 64MB
+    compression_type: "lz4"
+    max_request_size: 1048576  # 1MB
+    enable_idempotence: true
+  
+  # API response producer (for async API responses)
+  api_response:
+    acks: "1"
+    retries: 1
+    batch_size: 16384  # 16KB
+    linger_ms: 5
+    buffer_memory: 33554432  # 32MB
+    compression_type: "snappy"
+    enable_idempotence: false
+  
+  # Monitoring producer
+  monitoring:
+    acks: "1"
+    retries: 2
+    batch_size: 8192   # 8KB
+    linger_ms: 1000    # 1 second
+    buffer_memory: 16777216  # 16MB
+    compression_type: "gzip"
+
+# Schema Registry Configuration (for Avro/JSON Schema)
+schema_registry:
+  enabled: true
+  url: "http://schema-registry:8081"
+  auth:
+    username: "${SCHEMA_REGISTRY_USERNAME}"
+    password: "${SCHEMA_REGISTRY_PASSWORD}"
+  
+  # Schema settings
+  schemas:
+    auto_register: true
+    compatibility_level: "BACKWARD"  # Options: NONE, BACKWARD, FORWARD, FULL
+    subject_name_strategy: "TopicNameStrategy"
+  
+  # Schema subjects for different data types
+  subjects:
+    raw_text: "raw-text-value"
+    sentiment_result: "sentiment-result-value"
+    emotion_analysis: "emotion-analysis-value"
+    aggregated_insight: "aggregated-insight-value"
+
+# Environment-specific Overrides
+environments:
+  development:
+    kafka:
+      bootstrap_servers: ["localhost:9092"]
+      security:
+        protocol: "PLAINTEXT"
+    topics:
+      default_partitions: 3
+      default_replication: 1
+  
+  staging:
+    kafka:
+      bootstrap_servers: 
+        - "kafka-staging-1:9092"
+        - "kafka-staging-2:9092"
+      security:
+        protocol: "SASL_SSL"
+    topics:
+      default_partitions: 6
+      default_replication: 2
+  
+  production:
+    kafka:
+      bootstrap_servers:
+        - "kafka-prod-1:9092"
+        - "kafka-prod-2:9092"
+        - "kafka-prod-3:9092"
+      security:
+        protocol: "SASL_SSL"
+        sasl_mechanism: "SCRAM-SHA-512"
+    topics:
+      default_partitions: 12
+      default_replication: 3
+
+# Monitoring and Alerting
+monitoring:
+  metrics:
+    enabled: true
+    interval_seconds: 30
+    export_jmx: true
+    prometheus_port: 9308
+  
+  alerts:
+    lag_threshold: 10000  # Alert if consumer lag > 10k messages
+    error_rate_threshold: 0.05  # Alert if error rate > 5%
+    throughput_threshold_min: 100  # Alert if throughput < 100 msg/sec
+    response_time_threshold_ms: 1000  # Alert if avg response > 1s
+
+# Dead Letter Queue Configuration
+dead_letter_queue:
+  enabled: true
+  topic_suffix: ".dlq"
+  max_retries: 3
+  retry_delay_ms: 5000
+  retention_ms: 1209600000  # 14 days
+  
+# Disaster Recovery
+disaster_recovery:
+  backup:
+    enabled: true
+    interval_hours: 6
+    retention_days: 30
+    storage_location: "s3://kafka-backups/sentiment-engine/"
+  
+  cross_region_replication:
+    enabled: true
+    target_cluster: "kafka-dr-cluster"
+    replication_topics:
+      - "sentiment_results"
+      - "insights_daily"
+      - "brand_sentiment_summary"
