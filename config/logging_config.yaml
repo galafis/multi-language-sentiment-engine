@@ -1,0 +1,133 @@
+# ================================================================
+# LOGGING CONFIGURATION FOR MULTI-LANGUAGE SENTIMENT ENGINE
+# ================================================================
+# Centralized, structured logging with environment-based overrides.
+
+version: 1
+
+# Disable third-party noisy loggers if needed
+disable_existing_loggers: false
+
+formatters:
+  json:
+    # Structured JSON logs for ingestion by ELK/Datadog/etc.
+    format: |
+      {
+        "timestamp": "%(asctime)s",
+        "level": "%(levelname)s",
+        "logger": "%(name)s",
+        "service": "%(service)s",
+        "env": "%(env)s",
+        "trace_id": "%(trace_id)s",
+        "span_id": "%(span_id)s",
+        "message": "%(message)s",
+        "module": "%(module)s",
+        "func": "%(funcName)s",
+        "line": %(lineno)d
+      }
+    datefmt: "%Y-%m-%dT%H:%M:%S%z"
+  console_human:
+    format: "%(asctime)s | %(levelname)s | %(service)s | %(name)s | %(message)s"
+    datefmt: "%H:%M:%S"
+
+filters:
+  context:
+    "()": logging.Filter
+    # Custom filter can inject service/env/trace ids via logging.LoggerAdapter
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: console_human
+    stream: ext://sys.stdout
+  console_error:
+    class: logging.StreamHandler
+    level: ERROR
+    formatter: console_human
+    stream: ext://sys.stderr
+  json_stdout:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: json
+    stream: ext://sys.stdout
+  file_rotating:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: console_human
+    filename: logs/app.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+  file_error_rotating:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: console_human
+    filename: logs/error.log
+    maxBytes: 10485760
+    backupCount: 10
+
+loggers:
+  uvicorn:
+    level: INFO
+    handlers: [console]
+    propagate: false
+  kafka:
+    level: WARNING
+    handlers: [console]
+    propagate: false
+  sqlalchemy.engine:
+    level: WARNING
+    handlers: [console]
+    propagate: false
+
+root:
+  level: INFO
+  handlers: [console]
+
+# Service-specific logger presets
+services:
+  preprocessing_service:
+    logger_name: "mlse.preprocessing"
+    level: INFO
+    handlers: [console]
+  sentiment_analysis_service:
+    logger_name: "mlse.sentiment"
+    level: INFO
+    handlers: [console]
+  aggregation_service:
+    logger_name: "mlse.aggregation"
+    level: INFO
+    handlers: [console]
+  api_service:
+    logger_name: "mlse.api"
+    level: INFO
+    handlers: [console]
+
+# Environment overrides
+environments:
+  development:
+    root_level: DEBUG
+    handler: console
+    formatter: console_human
+  staging:
+    root_level: INFO
+    handler: json_stdout
+    formatter: json
+  production:
+    root_level: INFO
+    handler: json_stdout
+    formatter: json
+
+# OpenTelemetry / Trace correlation (optional)
+observability:
+  enabled: true
+  provider: opentelemetry
+  resource_attributes:
+    service.name: "mlse"
+    service.version: "${SERVICE_VERSION:-dev}"
+  processors:
+    - batch
+  exporters:
+    otlp:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
+      protocol: grpc
