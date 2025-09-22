@@ -1,0 +1,174 @@
+# ================================================================
+# MODEL CONFIGURATION FOR MULTI-LANGUAGE SENTIMENT ENGINE
+# ================================================================
+# Defines model registry, routing, runtime settings, and per-language models.
+
+# Global model settings
+global:
+  device: ${MODEL_DEVICE:-auto}  # auto | cpu | cuda:0 | mps
+  torch_dtype: ${TORCH_DTYPE:-float16}  # float32 | float16 | bfloat16
+  batch_size: 8
+  max_seq_length: 256
+  max_concurrent_models: 4
+  download_timeout_sec: 1800
+  cache_dir: ${MODEL_CACHE_DIR:-/models}
+  trust_remote_code: false
+  low_cpu_mem_usage: true
+  inference_timeout_ms: 15000
+
+# Registry of available models with metadata
+registry:
+  xlm_roberta_base:
+    provider: huggingface
+    repo_id: xlm-roberta-base
+    task: sequence-classification
+    num_labels: 3
+    languages: [multi]
+    size: base
+    params_million: 270
+  xlm_roberta_large:
+    provider: huggingface
+    repo_id: xlm-roberta-large
+    task: sequence-classification
+    num_labels: 3
+    languages: [multi]
+    size: large
+    params_million: 559
+  finbert:
+    provider: huggingface
+    repo_id: ProsusAI/finbert
+    task: sequence-classification
+    num_labels: 3
+    languages: [en]
+    domain: finance
+  bertimbau_base:
+    provider: huggingface
+    repo_id: neuralmind/bert-base-portuguese-cased
+    task: sequence-classification
+    num_labels: 3
+    languages: [pt]
+  sentimentpt_correto:
+    provider: huggingface
+    repo_id: pierreguillou/bert-large-cased-sentiment-brazilian-portuguese
+    task: sequence-classification
+    num_labels: 3
+    languages: [pt]
+  distilbert_multilingual:
+    provider: huggingface
+    repo_id: distilbert-base-multilingual-cased
+    task: sequence-classification
+    num_labels: 3
+    languages: [multi]
+
+# Routing rules by language and domain
+routing:
+  default:
+    # Fallback model for unknown languages
+    model: xlm_roberta_base
+  by_language:
+    en:
+      model: xlm_roberta_large
+      overrides:
+        max_seq_length: 192
+    pt:
+      model: bertimbau_base
+    es:
+      model: distilbert_multilingual
+    fr:
+      model: distilbert_multilingual
+    de:
+      model: distilbert_multilingual
+    zh:
+      model: xlm_roberta_large
+    ja:
+      model: xlm_roberta_large
+    ar:
+      model: xlm_roberta_base
+    hi:
+      model: xlm_roberta_base
+  by_domain:
+    finance:
+      model: finbert
+
+# Runtime optimization configs
+runtime:
+  torch:
+    inference_mode: true
+    no_grad: true
+    compile: false  # torch.compile for PyTorch 2.0+
+    benchmark_cudnn: true
+    deterministic: false
+  onnx:
+    enabled: false
+    opset: 17
+    use_ort: false
+  quantization:
+    dynamic:
+      enabled: false
+      dtype: int8
+    static:
+      enabled: false
+  gpu:
+    half_precision: true
+    allow_tf32: true
+    memory_fraction: 0.9
+
+# Model serving processes
+serving:
+  workers: 2
+  worker_class: "uvicorn.workers.UvicornWorker"
+  timeout: 60
+  keepalive: 5
+  preload: true
+
+# Monitoring and A/B testing
+monitoring:
+  enable_metrics: true
+  metrics_backend: prometheus
+  collect_gpu_stats: true
+  log_predictions_sample_rate: 0.01  # 1% sampling
+  drift_detection:
+    enabled: true
+    method: psi
+    threshold: 0.2
+
+ab_testing:
+  enabled: true
+  experiments:
+    - name: xlmr_base_vs_large
+      population_pct: 20
+      variants:
+        - model: xlm_roberta_base
+          weight: 0.5
+        - model: xlm_roberta_large
+          weight: 0.5
+
+# Model download sources and proxies
+network:
+  hf_hub_enable_hf_transfer: true
+  http_proxy: ${HTTP_PROXY:-}
+  https_proxy: ${HTTPS_PROXY:-}
+
+# Environment overrides
+environments:
+  development:
+    global:
+      batch_size: 4
+      max_concurrent_models: 2
+    runtime:
+      torch:
+        compile: false
+  staging:
+    global:
+      batch_size: 8
+      max_concurrent_models: 3
+    runtime:
+      torch:
+        compile: false
+  production:
+    global:
+      batch_size: 16
+      max_concurrent_models: 6
+    runtime:
+      torch:
+        compile: true
