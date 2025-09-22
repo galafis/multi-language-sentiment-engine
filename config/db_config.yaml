@@ -1,0 +1,213 @@
+# ================================================================
+# DATABASE CONFIGURATION FOR MULTI-LANGUAGE SENTIMENT ENGINE
+# ================================================================
+# This file defines connection settings, pooling, and tuning for SQL and NoSQL
+# data stores used by the platform. Values with ${ENV_VAR} are read from env.
+
+# Primary OLAP/Analytics Database (columnar, high-throughput reads)
+clickhouse:
+  enabled: true
+  host: ${CLICKHOUSE_HOST:-clickhouse}
+  port: ${CLICKHOUSE_PORT:-9000}
+  protocol: native  # options: native, http
+  user: ${CLICKHOUSE_USER:-default}
+  password: ${CLICKHOUSE_PASSWORD:-}
+  database: sentiment
+  compression: lz4
+  secure: false
+  verify_ssl: true
+  settings:
+    max_threads: 8
+    max_block_size: 65536
+    max_execution_time: 60
+    allow_experimental_object_type: 1
+  pool:
+    min_size: 1
+    max_size: 20
+    max_lifetime_sec: 300
+    idle_timeout_sec: 120
+
+# Search and Log Analytics (text search, dashboards)
+elasticsearch:
+  enabled: true
+  hosts:
+    - ${ELASTICSEARCH_HOST:-http://elasticsearch:9200}
+  username: ${ELASTICSEARCH_USER:-}
+  password: ${ELASTICSEARCH_PASSWORD:-}
+  sniff: false
+  ssl_enabled: false
+  verify_certs: false
+  indices:
+    raw_text_index: "raw-text-v1"
+    sentiment_results_index: "sentiment-results-v1"
+    aggregated_insights_index: "aggregated-insights-v1"
+  ingestion:
+    bulk_size: 2000
+    flush_interval_ms: 2000
+    backoff_retries: 3
+    backoff_factor: 2.0
+
+# Primary OLTP Store (transactional metadata, jobs, auth)
+postgresql:
+  enabled: true
+  host: ${POSTGRES_HOST:-postgres}
+  port: ${POSTGRES_PORT:-5432}
+  database: ${POSTGRES_DB:-sentiment}
+  user: ${POSTGRES_USER:-sentiment}
+  password: ${POSTGRES_PASSWORD:-sentiment}
+  sslmode: disable  # options: disable, require, verify-ca, verify-full
+  schema: public
+  pool:
+    min_connections: 2
+    max_connections: 30
+    max_idle_time_ms: 30000
+    connection_timeout_ms: 5000
+  migrations:
+    run_on_startup: true
+    path: ./migrations/sql
+
+# Key-Value Cache and Rate Limiting
+redis:
+  enabled: true
+  host: ${REDIS_HOST:-redis}
+  port: ${REDIS_PORT:-6379}
+  db: 0
+  password: ${REDIS_PASSWORD:-}
+  ssl: false
+  pool:
+    max_connections: 200
+    timeout_ms: 2000
+  cache:
+    default_ttl_seconds: 300
+    sentiment_result_ttl_seconds: 600
+    model_metadata_ttl_seconds: 3600
+
+# Document Store (flexible JSON storage for model outputs and configs)
+mongodb:
+  enabled: false
+  uri: ${MONGODB_URI:-mongodb://mongo:27017}
+  database: sentiment_engine
+  read_preference: primaryPreferred
+  write_concern: majority
+  retry_writes: true
+  pool:
+    max_pool_size: 100
+    min_pool_size: 0
+    max_idle_time_ms: 60000
+
+# Time-Series Database (metrics and model drift)
+timeseries_influxdb:
+  enabled: false
+  url: ${INFLUXDB_URL:-http://influxdb:8086}
+  org: ${INFLUXDB_ORG:-sentiment}
+  bucket: ${INFLUXDB_BUCKET:-metrics}
+  token: ${INFLUXDB_TOKEN:-}
+  write_options:
+    batch_size: 5000
+    flush_interval_ms: 1000
+    jitter_interval_ms: 0
+    retry_interval_ms: 5000
+
+# Data retention and archiving
+retention:
+  raw_text_days: 7
+  processed_text_days: 14
+  results_days: 30
+  insights_days: 365
+  archive:
+    enabled: true
+    storage: s3
+    s3:
+      bucket: ${ARCHIVE_BUCKET:-mlse-archive}
+      prefix: "year=%Y/month=%m/day=%d/"
+      region: ${AWS_REGION:-us-east-1}
+      kms_key_id: ${ARCHIVE_KMS_KEY_ID:-}
+
+# ORM/Driver tuning (global)
+drivers:
+  sqlalchemy:
+    echo: false
+    pool_pre_ping: true
+    pool_recycle: 1800
+    connect_args:
+      application_name: "mlse-svc"
+  psycopg2:
+    options: "-c statement_timeout=30000 -c idle_in_transaction_session_timeout=30000"
+
+# Read/Write routing for services
+routing:
+  preprocessing_service:
+    reads:
+      - redis
+      - postgresql
+    writes:
+      - clickhouse
+      - elasticsearch
+  sentiment_analysis_service:
+    reads:
+      - redis
+      - postgresql
+      - mongodb
+    writes:
+      - clickhouse
+      - elasticsearch
+  aggregation_service:
+    reads:
+      - clickhouse
+      - elasticsearch
+    writes:
+      - postgresql
+      - elasticsearch
+
+# Health checks and backoff policies
+resilience:
+  health_checks:
+    interval_seconds: 30
+    timeout_ms: 2000
+    failure_threshold: 3
+    success_threshold: 1
+  backoff:
+    initial_delay_ms: 200
+    max_delay_ms: 10000
+    multiplier: 2.0
+    jitter: true
+
+# Environment overrides
+environments:
+  development:
+    postgresql:
+      host: localhost
+      sslmode: disable
+    clickhouse:
+      host: localhost
+    redis:
+      host: localhost
+    elasticsearch:
+      hosts: ["http://localhost:9200"]
+
+  staging:
+    postgresql:
+      host: postgres-staging
+      sslmode: require
+    clickhouse:
+      host: clickhouse-staging
+    redis:
+      host: redis-staging
+    elasticsearch:
+      hosts: ["https://es-staging:9200"]
+
+  production:
+    postgresql:
+      host: postgres-prod
+      sslmode: verify-full
+    clickhouse:
+      host: clickhouse-prod
+      secure: true
+      verify_ssl: true
+    redis:
+      host: redis-prod
+      ssl: true
+    elasticsearch:
+      hosts: ["https://es-prod:9200"]
+      ssl_enabled: true
+      verify_certs: true
