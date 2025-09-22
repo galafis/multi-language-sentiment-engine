@@ -1,0 +1,307 @@
+{
+  "metadata": {
+    "dataset": "Twitter Sentiment Samples",
+    "version": "1.0",
+    "description": "Synthetic Twitter data for sentiment analysis testing across multiple languages",
+    "created_date": "2025-09-22",
+    "total_samples": 15,
+    "languages": ["en", "pt", "es", "fr", "de", "it", "ja", "zh"],
+    "sentiments": ["positive", "negative", "neutral"]
+  },
+  "tweets": [
+    {
+      "id": "tweet_001",
+      "text": "Absolutely love this new AI sentiment engine! The accuracy is incredible 🚀✨ #AI #MachineLearning",
+      "language": "en",
+      "sentiment": "positive",
+      "confidence": 0.95,
+      "timestamp": "2025-09-22T14:30:15Z",
+      "user_id": "user_12345",
+      "location": "San Francisco, CA",
+      "retweets": 45,
+      "likes": 128,
+      "hashtags": ["AI", "MachineLearning"],
+      "mentions": [],
+      "aspects": {
+        "accuracy": "positive",
+        "performance": "positive"
+      }
+    },
+    {
+      "id": "tweet_002",
+      "text": "Este sistema de análise de sentimentos é fantástico! Funciona perfeitamente em português 🇧🇷👏",
+      "language": "pt",
+      "sentiment": "positive",
+      "confidence": 0.92,
+      "timestamp": "2025-09-22T14:25:42Z",
+      "user_id": "user_67890",
+      "location": "São Paulo, Brazil",
+      "retweets": 23,
+      "likes": 87,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "functionality": "positive",
+        "multilingual_support": "positive"
+      }
+    },
+    {
+      "id": "tweet_003",
+      "text": "No estoy muy convencido de esta herramienta. Los resultados parecen inconsistentes 🤔",
+      "language": "es",
+      "sentiment": "negative",
+      "confidence": 0.78,
+      "timestamp": "2025-09-22T14:20:18Z",
+      "user_id": "user_24680",
+      "location": "Madrid, Spain",
+      "retweets": 5,
+      "likes": 12,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "consistency": "negative",
+        "reliability": "negative"
+      }
+    },
+    {
+      "id": "tweet_004",
+      "text": "C'est un outil intéressant pour l'analyse de sentiments. J'attends de voir les améliorations futures.",
+      "language": "fr",
+      "sentiment": "neutral",
+      "confidence": 0.68,
+      "timestamp": "2025-09-22T14:15:33Z",
+      "user_id": "user_13579",
+      "location": "Paris, France",
+      "retweets": 8,
+      "likes": 34,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "potential": "positive",
+        "current_state": "neutral"
+      }
+    },
+    {
+      "id": "tweet_005",
+      "text": "Das neue Sentiment-Analyse-Tool ist beeindruckend! Sehr genaue Ergebnisse für deutsche Texte 🎯",
+      "language": "de",
+      "sentiment": "positive",
+      "confidence": 0.89,
+      "timestamp": "2025-09-22T14:10:57Z",
+      "user_id": "user_97531",
+      "location": "Berlin, Germany",
+      "retweets": 19,
+      "likes": 63,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "accuracy": "positive",
+        "german_support": "positive"
+      }
+    },
+    {
+      "id": "tweet_006",
+      "text": "Questo strumento di analisi del sentiment ha delle limitazioni evidenti. Non sempre cattura il sarcasmo.",
+      "language": "it",
+      "sentiment": "negative",
+      "confidence": 0.72,
+      "timestamp": "2025-09-22T14:05:21Z",
+      "user_id": "user_86420",
+      "location": "Rome, Italy",
+      "retweets": 3,
+      "likes": 9,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "sarcasm_detection": "negative",
+        "limitations": "negative"
+      }
+    },
+    {
+      "id": "tweet_007",
+      "text": "この感情分析エンジンはとても興味深いです。日本語のテキストでも正確に動作しているようです。",
+      "language": "ja",
+      "sentiment": "positive",
+      "confidence": 0.85,
+      "timestamp": "2025-09-22T14:00:44Z",
+      "user_id": "user_75319",
+      "location": "Tokyo, Japan",
+      "retweets": 14,
+      "likes": 52,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "japanese_support": "positive",
+        "accuracy": "positive"
+      }
+    },
+    {
+      "id": "tweet_008",
+      "text": "这个情感分析工具还不错，但是在处理中文方面还有改进的空间。",
+      "language": "zh",
+      "sentiment": "neutral",
+      "confidence": 0.76,
+      "timestamp": "2025-09-22T13:55:12Z",
+      "user_id": "user_64208",
+      "location": "Beijing, China",
+      "retweets": 7,
+      "likes": 28,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "chinese_support": "neutral",
+        "improvement_needed": "neutral"
+      }
+    },
+    {
+      "id": "tweet_009",
+      "text": "Just tested the sentiment analysis on some edge cases. Mixed results - great for simple tweets, struggles with complex emotions 😕",
+      "language": "en",
+      "sentiment": "neutral",
+      "confidence": 0.64,
+      "timestamp": "2025-09-22T13:50:29Z",
+      "user_id": "user_53197",
+      "location": "London, UK",
+      "retweets": 11,
+      "likes": 41,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "simple_cases": "positive",
+        "complex_emotions": "negative"
+      }
+    },
+    {
+      "id": "tweet_010",
+      "text": "Incrível como a tecnologia evoluiu! Este engine consegue detectar nuances em textos multilíngues 🌍💡",
+      "language": "pt",
+      "sentiment": "positive",
+      "confidence": 0.93,
+      "timestamp": "2025-09-22T13:45:07Z",
+      "user_id": "user_42086",
+      "location": "Rio de Janeiro, Brazil",
+      "retweets": 31,
+      "likes": 95,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "technology_evolution": "positive",
+        "multilingual_capabilities": "positive"
+      }
+    },
+    {
+      "id": "tweet_011",
+      "text": "Meh... another AI tool that promises the world but delivers average results. Nothing groundbreaking here.",
+      "language": "en",
+      "sentiment": "negative",
+      "confidence": 0.81,
+      "timestamp": "2025-09-22T13:40:55Z",
+      "user_id": "user_31975",
+      "location": "Austin, TX",
+      "retweets": 2,
+      "likes": 6,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "expectations": "negative",
+        "innovation": "negative"
+      }
+    },
+    {
+      "id": "tweet_012",
+      "text": "La precisión del análisis varía según el contexto. Funciona bien para textos directos pero falla con ironía.",
+      "language": "es",
+      "sentiment": "neutral",
+      "confidence": 0.69,
+      "timestamp": "2025-09-22T13:35:38Z",
+      "user_id": "user_20864",
+      "location": "Barcelona, Spain",
+      "retweets": 6,
+      "likes": 19,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "direct_text": "positive",
+        "irony_detection": "negative"
+      }
+    },
+    {
+      "id": "tweet_013",
+      "text": "L'outil fonctionne correctement mais manque de finesse dans l'analyse des émotions subtiles. Potentiel intéressant.",
+      "language": "fr",
+      "sentiment": "neutral",
+      "confidence": 0.71,
+      "timestamp": "2025-09-22T13:30:14Z",
+      "user_id": "user_19753",
+      "location": "Lyon, France",
+      "retweets": 4,
+      "likes": 15,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "basic_functionality": "positive",
+        "subtle_emotions": "negative",
+        "potential": "positive"
+      }
+    },
+    {
+      "id": "tweet_014",
+      "text": "Endlich ein Tool, das auch deutsche Umgangssprache versteht! Bin begeistert von der Leistung 🔥",
+      "language": "de",
+      "sentiment": "positive",
+      "confidence": 0.91,
+      "timestamp": "2025-09-22T13:25:46Z",
+      "user_id": "user_08642",
+      "location": "Munich, Germany",
+      "retweets": 27,
+      "likes": 78,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "colloquial_german": "positive",
+        "performance": "positive"
+      }
+    },
+    {
+      "id": "tweet_015",
+      "text": "Lo strumento ha margini di miglioramento ma la direzione è promettente. Aspetto gli aggiornamenti futuri.",
+      "language": "it",
+      "sentiment": "neutral",
+      "confidence": 0.73,
+      "timestamp": "2025-09-22T13:20:28Z",
+      "user_id": "user_97531",
+      "location": "Milan, Italy",
+      "retweets": 9,
+      "likes": 33,
+      "hashtags": [],
+      "mentions": [],
+      "aspects": {
+        "improvement_potential": "positive",
+        "future_updates": "positive",
+        "current_state": "neutral"
+      }
+    }
+  ],
+  "statistics": {
+    "sentiment_distribution": {
+      "positive": 6,
+      "negative": 4,
+      "neutral": 5
+    },
+    "language_distribution": {
+      "en": 3,
+      "pt": 2,
+      "es": 2,
+      "fr": 2,
+      "de": 2,
+      "it": 2,
+      "ja": 1,
+      "zh": 1
+    },
+    "average_confidence": 0.80,
+    "total_engagement": {
+      "retweets": 217,
+      "likes": 728
+    }
+  }
+}
