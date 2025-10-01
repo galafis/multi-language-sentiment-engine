@@ -1,0 +1,13 @@
+# Caches
+model_cache/
+__pycache__/
+
+# Arquivos de ambiente
+.env
+
+# Arquivos de sistema
+.DS_Store
+
+# Logs
+*.log
+
