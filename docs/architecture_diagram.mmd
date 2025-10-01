@@ -1,0 +1,13 @@
+graph TD
+    A[Usuário/Cliente] --> B(FastAPI REST API)
+    B --> C(Middleware de Segurança)
+    B --> D(Redis Cache)
+    B --> E(Prometheus Metrics)
+    B --> F(MultiLanguageSentimentModel)
+    F --> G(Detecção de Idioma)
+    F --> H(SentimentModel por Idioma)
+    H --> I(Hugging Face Transformers)
+    I --> H
+    H --> F
+    F --> B
+    B --> A
