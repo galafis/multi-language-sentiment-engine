@@ -64,7 +64,7 @@ class SentimentModel:
         language: str = 'en',
         device: Optional[str] = None,
         cache_dir: Optional[str] = None,
-        use_auth_token: bool = False
+        token: Optional[str] = None
     ):
         """
         Initialize the sentiment model.
@@ -74,7 +74,7 @@ class SentimentModel:
             language: ISO language code (e.g., 'en', 'fr')
             device: Device to run the model on ('cpu', 'cuda:0', etc.)
             cache_dir: Directory to cache downloaded models
-            use_auth_token: Whether to use Hugging Face auth token for private models
+            token: Hugging Face authentication token (string) or boolean (legacy).
         """
         self.language = language.lower()
         
@@ -101,20 +101,20 @@ class SentimentModel:
             self.tokenizer = AutoTokenizer.from_pretrained(
                 model_name_or_path,
                 cache_dir=cache_dir,
-                use_auth_token=use_auth_token
+                token=token
             )
             
             self.config = AutoConfig.from_pretrained(
                 model_name_or_path,
                 cache_dir=cache_dir,
-                use_auth_token=use_auth_token
+                token=token
             )
             
             self.model = AutoModelForSequenceClassification.from_pretrained(
                 model_name_or_path,
                 config=self.config,
                 cache_dir=cache_dir,
-                use_auth_token=use_auth_token
+                token=token
             ).to(self.device)
             
             # Create sentiment analysis pipeline
@@ -171,7 +171,7 @@ class SentimentModel:
             results = self.sentiment_pipeline(
                 text, 
                 batch_size=batch_size,
-                return_all_scores=return_all_scores
+                top_k=None if return_all_scores else 1
             )
             
             # Format results
