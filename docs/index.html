@@ -3,17 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Language Sentiment Engine Documentation</title>
+    <title>Multi-Language Sentiment Engine - Demo</title>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
-        h1 { color: #333; }
-        p { color: #666; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+        }
     </style>
 </head>
 <body>
-    <h1>Multi-Language Sentiment Engine</h1>
-    <p>Bem-vindo à documentação do Multi-Language Sentiment Engine.</p>
-    <p>Este é um projeto para análise de sentimento em múltiplos idiomas usando modelos Transformer.</p>
-    <p>Para mais detalhes, consulte o <a href="https://github.com/gabrieldem/multi-language-sentiment-engine">repositório GitHub</a>.</p>
+    <div class="container">
+        <h1>Multi-Language Sentiment Engine</h1>
+        <p>Bem-vindo à página de demonstração do <strong>Multi-Language Sentiment Engine</strong> de Gabriel Demetrios Lafis.</p>
+        <p>Este projeto oferece uma API robusta para análise de sentimento em múltiplos idiomas, detecção de emoções, análise baseada em aspectos e detecção de sarcasmo, utilizando modelos de <em>transformers</em> de última geração.</p>
+
+        <h2>Arquitetura do Sistema</h2>
+        <p>O diagrama abaixo ilustra a arquitetura modular e escalável do motor de análise de sentimento:</p>
+        <img src="architecture_diagram.png" alt="Architecture Diagram">
+
+        <h2>Funcionalidades Principais</h2>
+        <ul>
+            <li>Análise de Sentimento Multi-idioma</li>
+            <li>Detecção de Emoções</li>
+            <li>Análise de Sentimento Baseada em Aspectos (ABSA)</li>
+            <li>Detecção de Sarcasmo</li>
+            <li>API RESTful com FastAPI</li>
+            <li>Métricas e Monitoramento com Prometheus</li>
+            <li>Cache com Redis para otimização de performance</li>
+        </ul>
+
+        <p>Para mais detalhes sobre o projeto, incluindo instalação e uso da API, visite o <a href="https://github.com/GabrielDemetriosLafis/multi-language-sentiment-engine">repositório GitHub</a>.</p>
+
+        <div class="footer">
+            <p>Desenvolvido por Gabriel Demetrios Lafis</p>
+            <p>&copy; 2025. Todos os direitos reservados.</p>
+        </div>
+    </div>
 </body>
 </html>
+
