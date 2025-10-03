@@ -27,7 +27,7 @@ Este repositório apresenta um **Mecanismo de Análise de Sentimento Multi-idiom
 *   **Cache com Redis**: Otimização de performance através de cache de resultados de análise, reduzindo a latência e a carga computacional para requisições repetidas.
 *   **Arquitetura Modular**: Código bem organizado e modular, facilitando a manutenção, escalabilidade e a adição de novas funcionalidades.
 
-### Arquitetura do Sistema
+### 🖼️ Imagem Hero: Arquitetura do Sistema
 
 O diagrama abaixo ilustra a arquitetura do Mecanismo de Análise de Sentimento Multi-idioma:
 
@@ -126,7 +126,7 @@ This repository presents a robust and scalable **Multi-Language Sentiment Analys
 *   **Caching with Redis**: Performance optimization through result caching, reducing latency and computational load for repeated requests.
 *   **Modular Architecture**: Well-organized and modular code, facilitating maintenance, scalability, and the addition of new functionalities.
 
-### System Architecture
+### 🖼️ Hero Image: System Architecture
 
 The diagram below illustrates the architecture of the Multi-Language Sentiment Analysis Engine:
 
