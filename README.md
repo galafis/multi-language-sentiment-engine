@@ -12,6 +12,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![Kubernetes](https://img.shields.io/badge/K8s-Deploy-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker)](Dockerfile)
 
 **Motor de analise de sentimento que processa textos em 13+ idiomas usando modelos Transformer (XLM-RoBERTa), com arquitetura de microsservicos baseada em Kafka, cache Redis e deploy Kubernetes pronto para producao.**
 
